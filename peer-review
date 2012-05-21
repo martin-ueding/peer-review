@@ -101,7 +101,7 @@ def find_pdf(latest):
     """
     files = os.listdir(latest)
 
-    regex = re.compile(r"\w+\d+-\d+-\w+\.pdf")
+    regex = re.compile(r"\w+\d+-\d+-Martin\.pdf")
 
     for f in files:
         matcher = regex.match(f)
