@@ -4,7 +4,10 @@
 # Copyright (c) 2012 Martin Ueding <dev@martin-ueding.de>
 
 import argparse
+import json
 import os
+import re
+import subprocess
 
 __docformat__ = "restructuredtext en"
 
@@ -18,18 +21,91 @@ modules = ["physik220", "physik210", "math240"]
 List of the current modules.
 """
 
-def find_latest(folders):
+def find_latest(modul, folders):
     """
     Finds the latest folder given a list of potential folders.
     """
     folders.sort()
-    uebungen = filter(lambda folder: folder.startswith("Uebung_"))
-    return uebungen[-1]
+    uebungen = filter(lambda folder: folder.startswith("Uebung_"), folders)
+    if len(uebungen) > 0:
+        for folder in reversed(uebungen):
+            pdf = find_pdf(os.path.join(root, modul, folder))
+            if pdf is None:
+                continue
 
+            return pdf
+    return None
+
+
+mailtext = """Hi,
+
+hier der aktuelle Stand der Zettel für {module}:
+
+Grüße,
+
+Martin"""
 
 def main():
     options = _parse_args()
 
+    pdf_files = []
+
+    for modul in map(lambda modul: os.path.join(root, modul), modules):
+
+        dirs = os.listdir(modul)
+        if len(dirs) == 0:
+            continue
+        latest = find_latest(modul, dirs)
+
+        pdf_files.append(latest)
+
+    attributes = [
+        "attachment='{paths}'".format(paths=','.join(pdf_files)),
+        "subject='Zettel {module}'".format(module=', '.join(sorted(modules))),
+        "body='{body}'".format(body=mailtext.format(
+            module=', '.join(sorted(modules)),
+        )),
+        "to='{to}'".format(to=','.join(get_recipients())),
+        "preselectid=id4",
+    ]
+
+    command = ["thunderbird", "-compose", ','.join(attributes)]
+    #print command
+
+    subprocess.call(command)
+
+
+def get_recipients():
+    configfile = os.path.expanduser("~/.config/peer-review.js")
+    if os.path.isfile(configfile):
+        with open(configfile) as f:
+            config = json.load(f)
+
+        return config["recipients"]
+
+    else:
+        return ""
+
+def find_pdf(latest):
+    """
+    Finds the PDF we are all interested in from the given folder.
+
+    :param latest: Absolute path to the folder.
+    :return: Absolute path of the PDF file. None if nothing found.
+    """
+    files = os.listdir(latest)
+
+    regex = re.compile(r"\w+\d+-\d+-\w+\.pdf")
+
+    for f in files:
+        matcher = regex.match(f)
+
+        if matcher is None:
+            continue
+
+        return os.path.join(latest, f)
+
+    return None
 
 def _parse_args():
     """
