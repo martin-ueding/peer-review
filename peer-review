@@ -120,7 +120,7 @@ def _parse_args():
     :return: Namespace with arguments.
     :rtype: Namespace
     """
-    parser = argparse.ArgumentParser(usage="", description="")
+    parser = argparse.ArgumentParser(usage="peer-review", description="Composes a new email with the most current exercises.")
     #parser.add_argument('args', metavar='N', type=str, nargs='*', help='Positional arguments.')
     #parser.add_argument("", dest="", type="", default=, help=)
     #parser.add_argument('--version', action='version', version='<the version>')
