@@ -44,6 +44,9 @@ hier der aktuelle Stand der Zettel für {module}:
 Grüße,
 
 Martin"""
+"""
+The text for the email.
+"""
 
 def main():
     options = _parse_args()
@@ -76,6 +79,9 @@ def main():
 
 
 def get_recipients():
+    """
+    Retrieves the recipients from the config file.
+    """
     configfile = os.path.expanduser("~/.config/peer-review.js")
     if os.path.isfile(configfile):
         with open(configfile) as f:
@@ -115,7 +121,7 @@ def _parse_args():
     :rtype: Namespace
     """
     parser = argparse.ArgumentParser(usage="", description="")
-    parser.add_argument('args', metavar='N', type=str, nargs='*',
+    #parser.add_argument('args', metavar='N', type=str, nargs='*',
                    help='Positional arguments.')
     #parser.add_argument("", dest="", type="", default=, help=)
     #parser.add_argument('--version', action='version', version='<the version>')
