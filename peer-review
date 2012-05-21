@@ -1,0 +1,51 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2012 Martin Ueding <dev@martin-ueding.de>
+
+import argparse
+import os
+
+__docformat__ = "restructuredtext en"
+
+root = os.path.expanduser("~/Dokumente/Studium")
+"""
+Root folder.
+"""
+
+modules = ["physik220", "physik210", "math240"]
+"""
+List of the current modules.
+"""
+
+def find_latest(folders):
+    """
+    Finds the latest folder given a list of potential folders.
+    """
+    folders.sort()
+    uebungen = filter(lambda folder: folder.startswith("Uebung_"))
+    return uebungen[-1]
+
+
+def main():
+    options = _parse_args()
+
+
+def _parse_args():
+    """
+    Parses the command line arguments.
+
+    :return: Namespace with arguments.
+    :rtype: Namespace
+    """
+    parser = argparse.ArgumentParser(usage="", description="")
+    parser.add_argument('args', metavar='N', type=str, nargs='*',
+                   help='Positional arguments.')
+    #parser.add_argument("", dest="", type="", default=, help=)
+    #parser.add_argument('--version', action='version', version='<the version>')
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
