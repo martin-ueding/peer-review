@@ -3,6 +3,13 @@
 
 # Copyright (c) 2012 Martin Ueding <dev@martin-ueding.de>
 
+"""
+Goes through the university module folders and gather the latest exercise PDF.
+Those PDF files are then used to combined into a new email in Thunderbird.
+
+The email addresses are taken from ``~/.config/peer-review.js``.
+"""
+
 import argparse
 import json
 import os
@@ -39,7 +46,7 @@ def find_latest(modul, folders):
 
 mailtext = """Hi,
 
-hier der aktuelle Stand der Zettel für {module}:
+hier der aktuelle Stand der Zettel für {module}.
 
 Grüße,
 
