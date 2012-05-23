@@ -48,6 +48,9 @@ mailtext = """Hi,
 
 hier der aktuelle Stand der Zettel für {module}.
 
+Beim Antworten bitte immer „allen Antworten“ drücken, damit die anderen auch
+sehen, welche Fehler bereits gefunden worden sind.
+
 Grüße,
 
 Martin"""
