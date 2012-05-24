@@ -11,6 +11,8 @@ The email addresses are taken from ``~/.config/peer-review.js``.
 """
 
 import argparse
+import datetime
+import dateutil.parser
 import json
 import os
 import re
@@ -102,7 +104,7 @@ def get_recipients():
 
     :return: List with recipients.
     """
-    configfile = os.path.expanduser("~/.config/peer-review.js")
+    configfile = os.path.expanduser("~/.config/peer-review/config.js")
     if os.path.isfile(configfile):
         with open(configfile) as f:
             config = json.load(f)
@@ -121,7 +123,7 @@ def find_pdf(latest):
     """
     files = os.listdir(latest)
 
-    regex = re.compile(r"\w+\d+-\d+-Martin\.pdf")
+    regex = re.compile(r"(\w+\d+)-(\d+)-Martin\.pdf")
 
     for f in files:
         matcher = regex.match(f)
@@ -129,9 +131,46 @@ def find_pdf(latest):
         if matcher is None:
             continue
 
+        if is_expired(matcher.group(1), matcher.group(2)):
+            continue
+
         return os.path.join(latest, f)
 
     return None
+
+
+def is_expired(modul, number):
+    """
+    Checks whether the given thing was already due and is therefore not needed
+    any more. If the configuration file was not found, nothing is marked as
+    expired.
+
+    :return: Whether this sheet is expired.
+    """
+    datefile = os.path.expanduser("~/.config/peer-review/dates.js")
+
+    if not os.path.isfile(datefile):
+        print "No config file found"
+        return False
+
+    with open(datefile) as datefile_h:
+        dates = json.load(datefile_h)
+
+    try:
+        sheet_date = dateutil.parser.parse(dates[modul][number])
+
+        is_old = sheet_date < datetime.datetime.now()
+
+        if is_old:
+            print modul, number, "is expired"
+        else:
+            print modul, number, "is current"
+
+        return is_old
+    except KeyError as e:
+        print "Cannot find key in ``dates.js``:", e
+        return False
+
 
 def _parse_args():
     """
