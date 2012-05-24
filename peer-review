@@ -72,17 +72,16 @@ def main():
         pdf_files.append(latest)
 
     attributes = [
-        "attachment='{paths}'".format(paths=','.join(pdf_files)),
+        "preselectid=id4",
+        "to='{to}'".format(to=','.join(get_recipients())),
         "subject='Zettel {module}'".format(module=', '.join(sorted(modules))),
         "body='{body}'".format(body=mailtext.format(
             module=', '.join(sorted(modules)),
         )),
-        "to='{to}'".format(to=','.join(get_recipients())),
-        "preselectid=id4",
+        "attachment='{paths}'".format(paths=','.join(pdf_files)),
     ]
 
     command = ["thunderbird", "-compose", ','.join(attributes)]
-    #print command
 
     subprocess.call(command)
 
