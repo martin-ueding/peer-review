@@ -76,12 +76,12 @@ def main():
         "to='{to}'".format(to=','.join(get_recipients())),
         "subject='Zettel {module}'".format(module=', '.join(sorted(modules))),
         "body='{body}'".format(body=mailtext.format(
-            module=', '.join(sorted(modules)),
+            module=", ".join(sorted(modules)),
         )),
-        "attachment='{paths}'".format(paths=','.join(pdf_files)),
+        "attachment='{paths}'".format(paths=",".join(pdf_files)),
     ]
 
-    command = ["thunderbird", "-compose", ','.join(attributes)]
+    command = ["thunderbird", "-compose", ",".join(attributes)]
 
     subprocess.call(command)
 
