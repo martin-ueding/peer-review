@@ -7,7 +7,7 @@
 Goes through the university module folders and gather the latest exercise PDF.
 Those PDF files are then used to combined into a new email in Thunderbird.
 
-The email addresses are taken from ``~/.config/peer-review.js``.
+The email addresses are taken from ``~/.config/peer-review/config.js``.
 """
 
 import argparse
