@@ -37,12 +37,15 @@ def find_latest(modul, folders):
     folders.sort()
     uebungen = filter(lambda folder: folder.startswith("Uebung_"), folders)
     if len(uebungen) > 0:
-        for folder in reversed(uebungen):
-            pdf = find_pdf(os.path.join(root, modul, folder))
-            if pdf is None:
-                continue
+        try:
+            for folder in reversed(uebungen):
+                pdf = find_pdf(os.path.join(root, modul, folder))
+                if pdf is None:
+                    continue
 
-            return pdf
+                return pdf
+        except ExpiredException:
+            return None
     return None
 
 
@@ -93,7 +96,8 @@ def find_pdf_files(modules):
             continue
         latest = find_latest(modul, dirs)
 
-        pdf_files.append(latest)
+        if latest is not None:
+            pdf_files.append(latest)
 
     return pdf_files
 
@@ -132,7 +136,7 @@ def find_pdf(latest):
             continue
 
         if is_expired(matcher.group(1), matcher.group(2)):
-            continue
+            raise ExpiredException()
 
         return os.path.join(latest, f)
 
@@ -170,6 +174,10 @@ def is_expired(modul, number):
     except KeyError as e:
         print "Cannot find key in ``dates.js``:", e
         return False
+
+
+class ExpiredException(Exception):
+    pass
 
 
 def _parse_args():
