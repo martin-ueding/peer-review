@@ -60,16 +60,7 @@ The text for the email.
 def main():
     options = _parse_args()
 
-    pdf_files = []
-
-    for modul in map(lambda modul: os.path.join(root, modul), modules):
-
-        dirs = os.listdir(modul)
-        if len(dirs) == 0:
-            continue
-        latest = find_latest(modul, dirs)
-
-        pdf_files.append(latest)
+    pdf_files = find_pdf_files(modules)
 
     attributes = [
         "preselectid=id4",
@@ -84,6 +75,25 @@ def main():
     command = ["thunderbird", "-compose", ",".join(attributes)]
 
     subprocess.call(command)
+
+
+def find_pdf_files(modules):
+    """
+    Find the latest PDF files.
+
+    :return: List with absolute paths.
+    """
+    pdf_files = []
+
+    for modul in map(lambda modul: os.path.join(root, modul), modules):
+        dirs = os.listdir(modul)
+        if len(dirs) == 0:
+            continue
+        latest = find_latest(modul, dirs)
+
+        pdf_files.append(latest)
+
+    return pdf_files
 
 
 def get_recipients():
