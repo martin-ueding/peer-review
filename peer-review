@@ -89,6 +89,8 @@ def main():
 def get_recipients():
     """
     Retrieves the recipients from the config file.
+
+    :return: List with recipients.
     """
     configfile = os.path.expanduser("~/.config/peer-review.js")
     if os.path.isfile(configfile):
