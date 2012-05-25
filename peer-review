@@ -17,6 +17,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 
 __docformat__ = "restructuredtext en"
 
@@ -53,6 +54,8 @@ mailtext = """Hi,
 
 hier der aktuelle Stand der Zettel für {module}.
 
+{mode}
+
 Beim Antworten bitte immer „allen Antworten“ drücken, damit die anderen auch sehen, welche Fehler bereits gefunden worden sind.
 
 Grüße,
@@ -67,6 +70,13 @@ def main():
 
     pdf_files = find_pdf_files(modules)
 
+    if not options.force:
+        pdf_files = filter(has_changed, pdf_files)
+
+    if len(pdf_files) == 0:
+        print "There are no files. You might want to use the ``-f`` option."
+        sys.exit(0)
+
     titles = []
     for pdf_file in pdf_files:
         basename = os.path.basename(pdf_file)
@@ -79,13 +89,18 @@ def main():
         "subject='Zettel {module}'".format(module=', '.join(sorted(titles))),
         "body='{body}'".format(body=mailtext.format(
             module=", ".join(sorted(titles)),
+            mode = "Es wurden alle Zettel, auch ohne neue Änderungen, gesendet." if options.force else "Es wurden nur geänderte Zettel gesendet.",
         )),
         "attachment='{paths}'".format(paths=",".join(pdf_files)),
     ]
 
     command = ["thunderbird", "-compose", ",".join(attributes)]
 
-    subprocess.call(command)
+    subprocess.check_call(command)
+
+    # Set the new hashes into the file.
+    for pdf_file in pdf_files:
+        set_last_hash(pdf_file, get_hash(pdf_file))
 
 
 def find_pdf_files(modules):
@@ -182,6 +197,63 @@ def is_expired(modul, number):
         return False
 
 
+def get_hash(filename):
+    """
+    Retrieves the hash sum of the given file. It uses the system ``sha1sum``.
+
+    >>> get_hash("hello.txt")
+    '4ab299c8ad6ed14f31923dd94f8b5f5cb89dfb54'
+
+    :param filename: Filename to hash.
+    :return: Hash string.
+    """
+    hashsum = (subprocess.check_output(["sha1sum", filename]).split())[0]
+
+    return hashsum
+
+hashfile = os.path.expanduser("~/.cache/peer-review-hashes.js")
+
+def get_last_hash(filename):
+    """
+    Retrieves the last sent hash.
+    """
+    if not os.path.isfile(hashfile):
+        return None
+
+    with open(hashfile) as f:
+        hashdata = json.load(f)
+
+    basename = os.path.basename(filename)
+
+    if basename in hashdata:
+        return hashdata[basename]
+
+
+def set_last_hash(filename, hashsum):
+    """
+    Saves the last sent hash.
+    """
+    if os.path.isfile(hashfile):
+        with open(hashfile) as f:
+            hashdata = json.load(f)
+    else:
+        hashdata = {}
+
+    hashdata[os.path.basename(filename)] = hashsum
+
+    with open(hashfile, "w") as f:
+        hashdata = json.dump(hashdata, f, indent=4, sort_keys=True)
+
+
+def has_changed(filename):
+    """
+    Checks whether the given file was changed since the last email.
+    """
+    current_hash = get_hash(filename)
+
+    return current_hash != get_last_hash(filename)
+
+
 class ExpiredException(Exception):
     pass
 
@@ -195,7 +267,7 @@ def _parse_args():
     """
     parser = argparse.ArgumentParser(usage="peer-review", description="Composes a new email with the most current exercises.")
     #parser.add_argument('args', metavar='N', type=str, nargs='*', help='Positional arguments.')
-    #parser.add_argument("", dest="", type="", default=, help=)
+    parser.add_argument("-f", dest="force", action="store_true", help="Send all, regardless of change")
     #parser.add_argument('--version', action='version', version='<the version>')
 
     return parser.parse_args()
