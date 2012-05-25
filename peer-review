@@ -186,11 +186,6 @@ def is_expired(modul, number):
 
         is_old = sheet_date < datetime.datetime.now()
 
-        if is_old:
-            print modul, number, "is expired"
-        else:
-            print modul, number, "is current"
-
         return is_old
     except KeyError as e:
         print "Cannot find key in ``dates.js``:", e
