@@ -67,12 +67,18 @@ def main():
 
     pdf_files = find_pdf_files(modules)
 
+    titles = []
+    for pdf_file in pdf_files:
+        basename = os.path.basename(pdf_file)
+        nameparts = basename.split('-')
+        titles.append('-'.join(nameparts[:2]))
+
     attributes = [
         "preselectid=id4",
         "to='{to}'".format(to=','.join(get_recipients())),
-        "subject='Zettel {module}'".format(module=', '.join(sorted(modules))),
+        "subject='Zettel {module}'".format(module=', '.join(sorted(titles))),
         "body='{body}'".format(body=mailtext.format(
-            module=", ".join(sorted(modules)),
+            module=", ".join(sorted(titles)),
         )),
         "attachment='{paths}'".format(paths=",".join(pdf_files)),
     ]
