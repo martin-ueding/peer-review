@@ -26,7 +26,7 @@ root = os.path.expanduser("~/Dokumente/Studium")
 Root folder.
 """
 
-modules = ["physik220", "physik210", "math240"]
+modules = ["physik220", "physik211", "math240"]
 """
 List of the current modules.
 """
