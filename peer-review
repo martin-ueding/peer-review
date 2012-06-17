@@ -148,7 +148,7 @@ def find_pdf(latest):
     """
     files = os.listdir(latest)
 
-    regex = re.compile(r"(\w+\d+)-(\d+)-Martin\.pdf")
+    regex = re.compile(r"(\w+\d+)-(\d+)-(Martin|bzr)\.pdf")
 
     for f in files:
         matcher = regex.match(f)
