@@ -36,25 +36,6 @@ modules = [
 List of the current modules.
 """
 
-def find_latest(modul, folders):
-    """
-    Finds the latest folder given a list of potential folders.
-    """
-    folders.sort()
-    uebungen = filter(lambda folder: folder.startswith("Uebung_"), folders)
-    if len(uebungen) > 0:
-        try:
-            for folder in reversed(uebungen):
-                pdf = find_pdf(os.path.join(root, modul, folder))
-                if pdf is None:
-                    continue
-
-                return pdf
-        except ExpiredException:
-            return None
-    return None
-
-
 mailtext = """Hi,
 
 hier der aktuelle Stand der Zettel für {module}.
@@ -116,14 +97,23 @@ def find_pdf_files(modules):
     """
     pdf_files = []
 
-    for modul in map(lambda modul: os.path.join(root, modul), modules):
-        dirs = os.listdir(modul)
+    for modul in modules:
+        dirs = os.listdir(os.path.join(root, modul))
         if len(dirs) == 0:
             continue
-        latest = find_latest(modul, dirs)
 
-        if latest is not None:
-            pdf_files.append(latest)
+        for d in dirs:
+            print d
+            try:
+                for f in os.listdir(os.path.join(root, modul, d)):
+                    print f
+                    regex = r"{modul}-\d+-(Martin|bzr)\.pdf".format(modul=modul)
+                    print regex
+                    if re.match(regex, f) is not None:
+                        print "match"
+                        pdf_files.append(os.path.join(root, modul, d, f))
+            except OSError:
+                pass
 
     return pdf_files
 
