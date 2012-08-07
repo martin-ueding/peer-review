@@ -103,14 +103,10 @@ def find_pdf_files(modules):
             continue
 
         for d in dirs:
-            print d
             try:
                 for f in os.listdir(os.path.join(root, modul, d)):
-                    print f
                     regex = r"{modul}-\d+-(Martin|bzr)\.pdf".format(modul=modul)
-                    print regex
                     if re.match(regex, f) is not None:
-                        print "match"
                         pdf_files.append(os.path.join(root, modul, d, f))
             except OSError:
                 pass
