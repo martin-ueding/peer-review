@@ -30,7 +30,7 @@ modules = [
     "math340",
     "physik212",
     "physik311",
-    "physik320",
+    "physik321",
 ]
 """
 List of the current modules.
