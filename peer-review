@@ -88,7 +88,6 @@ def main():
     for pdf_file in pdf_files:
         set_last_hash(pdf_file, get_hash(pdf_file))
 
-
 def find_pdf_files(modules):
     """
     Find the latest PDF files.
@@ -112,7 +111,6 @@ def find_pdf_files(modules):
                 pass
 
     return pdf_files
-
 
 def get_recipients():
     """
@@ -154,7 +152,6 @@ def find_pdf(latest):
 
     return None
 
-
 def is_expired(modul, number):
     """
     Checks whether the given thing was already due and is therefore not needed
@@ -181,7 +178,6 @@ def is_expired(modul, number):
     except KeyError as e:
         print "Cannot find key in ``dates.js``:", e
         return False
-
 
 def get_hash(filename):
     """
@@ -214,7 +210,6 @@ def get_last_hash(filename):
     if basename in hashdata:
         return hashdata[basename]
 
-
 def set_last_hash(filename, hashsum):
     """
     Saves the last sent hash.
@@ -230,7 +225,6 @@ def set_last_hash(filename, hashsum):
     with open(hashfile, "w") as f:
         hashdata = json.dump(hashdata, f, indent=4, sort_keys=True)
 
-
 def has_changed(filename):
     """
     Checks whether the given file was changed since the last email.
@@ -239,10 +233,8 @@ def has_changed(filename):
 
     return current_hash != get_last_hash(filename)
 
-
 class ExpiredException(Exception):
     pass
-
 
 def _parse_args():
     """
@@ -257,7 +249,6 @@ def _parse_args():
     #parser.add_argument('--version', action='version', version='<the version>')
 
     return parser.parse_args()
-
 
 if __name__ == "__main__":
     main()
