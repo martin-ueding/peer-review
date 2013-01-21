@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2012 Martin Ueding <dev@martin-ueding.de>
+# Copyright (c) 2012-2013 Martin Ueding <dev@martin-ueding.de>
 
 """
 Goes through the university module folders and gather the latest exercise PDF.
@@ -42,9 +42,7 @@ hier der aktuelle Stand der Zettel für {module}.
 
 {mode}
 
-Beim Antworten bitte immer „allen Antworten“ drücken, damit die anderen auch sehen, welche Fehler bereits gefunden worden sind.
-
-Grüße,
+Grüße
 
 Martin"""
 """
