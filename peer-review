@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2012-2013 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2012-2013 Martin Ueding <dev@martin-ueding.de>
 
 """
 Goes through the university module folders and gather the latest exercise PDF.
@@ -27,10 +27,8 @@ Root folder.
 """
 
 modules = [
-    "math340",
-    "physik212",
-    "physik311",
-    "physik321",
+    "physik411",
+    "physik421",
 ]
 """
 List of the current modules.
